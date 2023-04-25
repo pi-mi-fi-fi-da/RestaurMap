@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:DefaultConnection"
+    },
+    "mongodb1": {
+      "containerPorts": "27017:27017",
+      "secretStore": null,
+      "containerName": "mongodb",
+      "containerImage": "mongo:4.0",
+      "type": "mongodb.container",
+      "connectionId": "mongo-db"
+    }
+  }
+}
