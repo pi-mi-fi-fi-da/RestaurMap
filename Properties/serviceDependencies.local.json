@@ -8,7 +8,8 @@
       "containerPorts": "27017:27017",
       "secretStore": null,
       "containerName": "mongodb",
-      "containerImage": "mongo:4.0",
+      "containerImage": "mongo",
+      "resourceId": null,
       "type": "mongodb.container",
       "connectionId": "mongo-db"
     }

@@ -7,6 +7,7 @@
     <UserSecretsId>aspnet-RestaurMap-b89ddb0b-8810-45bd-a094-2d5babce9e35</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
+    <DockerComposeProjectPath>docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
