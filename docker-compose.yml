@@ -1,14 +1,8 @@
 version: '3.4'
 
 services:
-  restaurmap:
-    image: ${DOCKER_REGISTRY-}restaurmap
-    build:
-      context: .
-      dockerfile: Dockerfile
-
   mongo-db:
-    image: "mongo:4.4"
+    image: "mongo:4.0"
     restart: always
     ports: 
         - 27017:27017
