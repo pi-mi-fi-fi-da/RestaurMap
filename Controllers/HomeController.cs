@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RestaurMap.Models;
+using RestaurMap.Models.View;
 using System.Diagnostics;
 
 namespace RestaurMap.Controllers

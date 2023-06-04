@@ -18,8 +18,8 @@ public class RestaurantsService : IRestaurantsService
     public async Task<Restaurant?> GetOneAsync(string id, CancellationToken cancellationToken) =>
         await _RestaurantsCollection.Find(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
 
-    public async Task CreateAsync(Restaurant newRestaurant, CancellationToken cancellationToken) =>
-        await _RestaurantsCollection.InsertOneAsync(newRestaurant, cancellationToken);
+    public async Task CreateAsync(Restaurant newRestaurant) =>
+        await _RestaurantsCollection.InsertOneAsync(newRestaurant);
 
     public async Task RemoveAsync(string id, CancellationToken cancellationToken) =>
         await _RestaurantsCollection.DeleteOneAsync(x => x.Id == id, cancellationToken);

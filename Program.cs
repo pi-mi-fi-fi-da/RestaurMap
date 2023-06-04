@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using RestaurMap.Data;
+using RestaurMap.Models.Db;
+using RestaurMap.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,14 +27,10 @@ MongoClient client = new MongoClient(settings);
 IMongoDatabase database = client.GetDatabase(url.DatabaseName);
 
 //Colections
-IMongoCollection<Phrase> phrases = database.GetCollection<Phrase>("phrases");
-//IMongoCollection<PhraseProduct> products = database.GetCollection<PhraseProduct>("products");
+IMongoCollection<Restaurant> restaurants = database.GetCollection<Restaurant>("phrases");
 
-builder.Services.AddSingleton(phrases);
-//builder.Services.AddSingleton(products);
-
-
-
+builder.Services.AddSingleton(restaurants);
+builder.Services.AddScoped<IRestaurantsService, RestaurantsService>();
 
 var app = builder.Build();
 
@@ -61,14 +59,14 @@ app.MapControllerRoute(
 	pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-//app.Lifetime.ApplicationStarted.Register(async () =>
-//{
-//    //var phrases = app.Services.GetRequiredService<IMongoCollection<Phrase>>();
-//    //await phrases.InsertOneAsync(new Phrase { Name = $"fraza_{DateTime.UtcNow}" });
+//////app.Lifetime.ApplicationStarted.Register(async () =>
+//////{
+//////    //var phrases = app.Services.GetRequiredService<IMongoCollection<Phrase>>();
+//////    //await phrases.InsertOneAsync(new Phrase { Name = $"fraza_{DateTime.UtcNow}" });
 
-//    //var products = app.Services.GetRequiredService<IMongoCollection<PhraseProduct>>();
-//    //await products.InsertOneAsync(new PhraseProduct { PhraseName = $"fraza_{DateTime.UtcNow}" });
-//});
+//////    //var products = app.Services.GetRequiredService<IMongoCollection<PhraseProduct>>();
+//////    //await products.InsertOneAsync(new PhraseProduct { PhraseName = $"fraza_{DateTime.UtcNow}" });
+//////});
 //Scrapper scrapper = new Scrapper(new PhraseProductsService(products), new PhrasesService(phrases));
 //await scrapper.TrackData(CancellationToken.None);
 
