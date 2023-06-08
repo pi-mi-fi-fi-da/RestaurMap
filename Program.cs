@@ -1,22 +1,21 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
-using RestaurMap.Data;
+using RestaurMap.Models.Db;
+using RestaurMap.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-	.AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
 // Convention
 var pack = new ConventionPack
 {
     new CamelCaseElementNameConvention(),
     new StringIdStoredAsObjectIdConvention()
 };
-ConventionRegistry.Register("kradneo_convenction", pack, _ => true);
+ConventionRegistry.Register("restaurmap_convenction", pack, _ => true);
 
 //MongoDB
 MongoUrl url = new MongoUrl(builder.Configuration.GetConnectionString("MongoDB"));
@@ -25,23 +24,17 @@ MongoClient client = new MongoClient(settings);
 IMongoDatabase database = client.GetDatabase(url.DatabaseName);
 
 //Colections
-IMongoCollection<Phrase> phrases = database.GetCollection<Phrase>("phrases");
-//IMongoCollection<PhraseProduct> products = database.GetCollection<PhraseProduct>("products");
+IMongoCollection<Restaurant> restaurants = database.GetCollection<Restaurant>("restaurants");
 
-builder.Services.AddSingleton(phrases);
-//builder.Services.AddSingleton(products);
+builder.Services.AddSingleton(restaurants);
 
-
-
+//Services
+builder.Services.AddScoped<IRestaurantsService, RestaurantsService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-	app.UseMigrationsEndPoint();
-}
-else
+if (!app.Environment.IsDevelopment())
 {
 	app.UseExceptionHandler("/Home/Error");
 	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -53,13 +46,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
+//app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
+//app.MapRazorPages();
 
 //app.Lifetime.ApplicationStarted.Register(async () =>
 //{

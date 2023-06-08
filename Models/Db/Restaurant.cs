@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using RestaurMap.Repository;
+﻿using Microsoft.Build.Framework;
 
 namespace RestaurMap.Models.Db
 {
-    public class Restaurant : IEntity<int>
+    public class Restaurant
     {
         [Required]
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
         public string Adress { get; set; }
