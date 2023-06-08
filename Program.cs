@@ -46,7 +46,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-//app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -54,14 +53,14 @@ app.MapControllerRoute(
 	pattern: "{controller=Home}/{action=Index}/{id?}");
 //app.MapRazorPages();
 
-//app.Lifetime.ApplicationStarted.Register(async () =>
-//{
-//    //var phrases = app.Services.GetRequiredService<IMongoCollection<Phrase>>();
-//    //await phrases.InsertOneAsync(new Phrase { Name = $"fraza_{DateTime.UtcNow}" });
+//////app.Lifetime.ApplicationStarted.Register(async () =>
+//////{
+//////    //var phrases = app.Services.GetRequiredService<IMongoCollection<Phrase>>();
+//////    //await phrases.InsertOneAsync(new Phrase { Name = $"fraza_{DateTime.UtcNow}" });
 
-//    //var products = app.Services.GetRequiredService<IMongoCollection<PhraseProduct>>();
-//    //await products.InsertOneAsync(new PhraseProduct { PhraseName = $"fraza_{DateTime.UtcNow}" });
-//});
+//////    //var products = app.Services.GetRequiredService<IMongoCollection<PhraseProduct>>();
+//////    //await products.InsertOneAsync(new PhraseProduct { PhraseName = $"fraza_{DateTime.UtcNow}" });
+//////});
 //Scrapper scrapper = new Scrapper(new PhraseProductsService(products), new PhrasesService(phrases));
 //await scrapper.TrackData(CancellationToken.None);
 
