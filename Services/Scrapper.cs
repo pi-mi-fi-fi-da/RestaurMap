@@ -42,7 +42,7 @@ public class Scrapper
             string nestedContent = webDriver.PageSource;
             nestedHtmlDocument.LoadHtml(nestedContent);
 
-            var RestaurantInfoNode = nestedHtmlDocument.DocumentNode.SelectNodes("//div[@class='Io6YTe fontBodyMedium ']");
+            var RestaurantInfoNode = nestedHtmlDocument.DocumentNode.SelectNodes("//div[@class='Io6YTe fontBodyMedium kR99db ']");
 
             //Creating Restaurant 
             restaurant.Name = RestaurantInfoNode[0].InnerHtml;

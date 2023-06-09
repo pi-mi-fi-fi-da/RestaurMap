@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RestaurMap.Models;
 using RestaurMap.Models.View;
+using RestaurMap.Services;
 using System.Diagnostics;
 
 namespace RestaurMap.Controllers
@@ -8,10 +9,13 @@ namespace RestaurMap.Controllers
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
+		private readonly Scrapper _scrapper;
 
-		public HomeController(ILogger<HomeController> logger)
+		public HomeController(ILogger<HomeController> logger, Scrapper scrapper)
 		{
 			_logger = logger;
+			_scrapper = scrapper;
+			_scrapper.Scrapp();
 		}
 
 		public IActionResult Index()
