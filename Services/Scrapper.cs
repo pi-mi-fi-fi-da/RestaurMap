@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
-using RestaurMap.Models.Db;
 using HtmlAgilityPack;
+using RestaurMap.Models;
 
 namespace RestaurMap.Services;
 

@@ -1,13 +1,21 @@
+using AspNetCore.Identity.MongoDbCore.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
-using RestaurMap.Models.Db;
+using RestaurMap.Models;
 using RestaurMap.Services;
+
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+
+var mongoDbSettings = builder.Configuration.GetSection(nameof(MongoDbConfig)).Get<MongoDbConfig>();
 
 // Convention
 var pack = new ConventionPack
@@ -32,7 +40,17 @@ builder.Services.AddSingleton(restaurants);
 builder.Services.AddScoped<IRestaurantsService, RestaurantsService>();
 builder.Services.AddScoped<Scrapper>();
 
+
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+	.AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>
+	(
+		mongoDbSettings.ConnectionString, mongoDbSettings.Name
+	);
+
+
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -47,6 +65,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

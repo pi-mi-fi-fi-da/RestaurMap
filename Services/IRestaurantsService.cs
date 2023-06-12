@@ -1,4 +1,4 @@
-﻿using RestaurMap.Models.Db;
+﻿using RestaurMap.Models;
 
 namespace RestaurMap.Services;
 

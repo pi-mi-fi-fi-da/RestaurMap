@@ -1,7 +1,7 @@
 ﻿using Microsoft.Build.Framework;
 
-namespace RestaurMap.Models.Db;
-public class Restaurant  
+namespace RestaurMap.Models;
+public class Restaurant
 {
     [Required]
     public string Id { get; set; }
