@@ -3,21 +3,27 @@ using RestaurMap.Models;
 using RestaurMap.Models.View;
 using RestaurMap.Services;
 using System.Diagnostics;
+using System.Threading;
 
 namespace RestaurMap.Controllers;
 
 public class HomeController : Controller
 {
 	private readonly ILogger<HomeController> _logger;
+    private readonly IRestaurantsService _restaurantsService;
 
-	public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, IRestaurantsService restaurantsService)
 	{
 		_logger = logger;
-	}
-	public IActionResult Index()
-	{
-		return View();
-	}
+        _restaurantsService = restaurantsService;
+    }
+
+    public async Task<ActionResult<List<Restaurant>>> Index(CancellationToken cancelationToken)
+    {
+        var restaurants = await _restaurantsService.GetAllAsync(cancelationToken);
+        return View(restaurants);
+    }
+
 	public IActionResult Privacy()
 	{
 		return View();
