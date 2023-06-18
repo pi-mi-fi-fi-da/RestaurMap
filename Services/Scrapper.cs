@@ -3,6 +3,9 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
 using HtmlAgilityPack;
 using RestaurMap.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RestaurMap.Services;
 
@@ -11,7 +14,7 @@ public class Scrapper
     private readonly IRestaurantsService _restaurantsService;
     public Scrapper(IRestaurantsService restaurantsService)
     {
-        _restaurantsService = restaurantsService;   
+        _restaurantsService = restaurantsService;
     }
     public async Task Scrapp()
     {
@@ -37,6 +40,22 @@ public class Scrapper
             var nestedHtmlDocument = new HtmlDocument();
 
             string URL = r.GetAttributeValue("href", "No information");
+            Regex pattern = new Regex(@"\d\d[.]\d\d\d\d\d\d\d");
+
+            bool janusz = false;
+            foreach (Match match in pattern.Matches(URL))
+            {
+                if (janusz)
+                {
+                    restaurant.CordY = match.Value;
+                }
+                else
+                {
+                    restaurant.CordX = match.Value;
+                };
+                janusz = true;
+            }
+
             webDriver.Navigate().GoToUrl(URL);
 
             string nestedContent = webDriver.PageSource;
@@ -62,7 +81,7 @@ public class Scrapper
         }
     }
 }
-    
 
 
-    
+
+

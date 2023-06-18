@@ -10,4 +10,6 @@ public class Restaurant
     public string Website { get; set; }
     public string Category { get; set; }
     public string Adress { get; set; }
+    public string CordX { get; set; }
+    public string CordY { get; set; }
 }
