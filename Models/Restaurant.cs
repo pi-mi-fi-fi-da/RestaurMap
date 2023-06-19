@@ -12,4 +12,5 @@ public class Restaurant
     public string Adress { get; set; }
     public string CordX { get; set; }
     public string CordY { get; set; }
+    public bool Confirmed { get; set; } = false;
 }

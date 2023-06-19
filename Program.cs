@@ -1,4 +1,5 @@
 using AspNetCore.Identity.MongoDbCore.Infrastructure;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
@@ -47,6 +48,14 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
         mongoDbSettings.ConnectionString, mongoDbSettings.Name
     );
 
+builder.Services.Configure<IdentityOptions>(opts => {
+    opts.Password.RequiredLength = 8;
+    opts.Password.RequireLowercase = true;
+    opts.Password.RequireNonAlphanumeric = true;
+    opts.Password.RequireDigit = true;
+    opts.Password.RequireUppercase = true;
+    opts.Password.RequireLowercase = true;
+});
 
 
 var app = builder.Build();
@@ -76,7 +85,23 @@ app.MapControllerRoute(
 using (var scope = app.Services.CreateScope())
 {
     var scraper = scope.ServiceProvider.GetService<Scrapper>();
-    scraper.Scrapp();
+    await scraper.Scrapp();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+    var roles = new[] { "Admin", "Op", "User" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            var x = new ApplicationRole();
+            x.Name = role;
+            await roleManager.CreateAsync(x);
+        }
+    }
 }
 
 app.Run();
