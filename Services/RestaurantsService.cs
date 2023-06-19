@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using RestaurMap.Models;
 
 namespace RestaurMap.Services;
@@ -23,4 +24,9 @@ public class RestaurantsService : IRestaurantsService
 
     public async Task RemoveAsync(string id, CancellationToken cancellationToken) =>
         await _RestaurantsCollection.DeleteOneAsync(x => x.Id == id, cancellationToken);
+
+    public async Task EditOneAsync(string id, Restaurant restaurant)
+    {
+        await _RestaurantsCollection.ReplaceOneAsync(x => x.Id == id, restaurant);
+    }
 }

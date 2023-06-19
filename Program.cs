@@ -76,7 +76,7 @@ app.MapControllerRoute(
 using (var scope = app.Services.CreateScope())
 {
     var scraper = scope.ServiceProvider.GetService<Scrapper>();
-    scraper.Scrapp();
+    await scraper.Scrapp();
 }
 
 app.Run();

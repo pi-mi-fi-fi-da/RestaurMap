@@ -1,17 +1,28 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RestaurMap.Models;
+using RestaurMap.Services;
 using System.Data;
+using System.Security.Cryptography;
+using System.Threading;
 
 namespace RestaurMap.Controllers;
 
 [Authorize(Roles = "Admin")]
 public class RestaurantController : Controller
 {
-    // GET: RestaurantController
-    public ActionResult Index()
+    private readonly IRestaurantsService _restaurantService;
+    public RestaurantController(IRestaurantsService restaurantsService)
     {
-        return View();
+        _restaurantService = restaurantsService;   
+    }
+    // GET: RestaurantController
+    public async Task<ActionResult> Index(CancellationToken cancellationToken)
+    {
+        List<Restaurant> restaurants = new List<Restaurant>();
+        restaurants = await _restaurantService.GetAllAsync(cancellationToken);
+        return View(restaurants);
     }
     // GET: RestaurantController/Details/5
     public ActionResult Details(int id)
@@ -28,56 +39,38 @@ public class RestaurantController : Controller
     // POST: RestaurantController/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Create(IFormCollection collection)
+    public async Task<ActionResult> Create(Restaurant restaurant)
     {
-        try
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
-            return View();
-        }
+        await _restaurantService.CreateAsync(restaurant);
+        return RedirectToAction("Index");
     }
-
-    // GET: RestaurantController/Edit/5
-    public ActionResult Edit(int id)
+    // POST: RestaurantController/Edit/5
+    [HttpGet]
+    public async Task<IActionResult> Edit()
     {
         return View();
     }
-
-    // POST: RestaurantController/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Edit(int id, IFormCollection collection)
+    public async Task<IActionResult> Edit(string id, Restaurant restaurant)
     {
-        try
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
-            return View();
-        }
+        await _restaurantService.EditOneAsync(id, restaurant);
+        return RedirectToAction("Index");
     }
     // GET: RestaurantController/Delete/5
-    public ActionResult Delete(int id)
+    [HttpGet]
+    public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
     {
-        return View();
+        var toRemove = await _restaurantService.GetOneAsync(id, cancellationToken);
+        return View(toRemove);
     }
 
     // POST: RestaurantController/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Delete(int id, IFormCollection collection)
+    public async Task<IActionResult> Delete(Restaurant restaurant, CancellationToken cancellationToken)
     {
-        try
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
-            return View();
-        }
+        await _restaurantService.RemoveAsync(restaurant.Id ,cancellationToken);
+        return RedirectToAction("Index");
     }
 }

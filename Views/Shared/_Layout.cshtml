@@ -31,6 +31,15 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         @{
+                            if (User.IsInRole("Admin"))
+
+                            {
+                                <li class="nav-item">
+                                    <a asp-controller="Restaurant" asp-action="Index" class="nav-link text-dark">Admin Panel</a>
+                                </li>
+                            }
+                        }
+                        @{
                             if (!User?.Identity?.IsAuthenticated ?? false)
                             {
                                 <li class="nav-item">
@@ -50,6 +59,7 @@
                                 </li>
                             }
                         }
+                        
                     </ul>
                 </div>
             </div>

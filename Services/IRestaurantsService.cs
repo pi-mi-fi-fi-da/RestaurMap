@@ -8,4 +8,5 @@ public interface IRestaurantsService
     public Task<Restaurant?> GetOneAsync(string id, CancellationToken cancellationToken);
     public Task CreateAsync(Restaurant newRestaurant);
     public Task RemoveAsync(string id, CancellationToken cancellationToken);
+    public Task EditOneAsync(string id, Restaurant restaurant); 
 }
