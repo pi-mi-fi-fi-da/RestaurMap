@@ -19,77 +19,77 @@ public class Scrapper
         
     }
     public async Task Scrapp()
-    {
-        int count;
-        var list = await _restaurantsService.GetAllAsync(CancellationToken.None);
-        count = list.Count();
-        if (count >= 5)
-            return;
-        List<Restaurant> restaurants = new List<Restaurant>();
-        var options = new ChromeOptions();
-        options.AddArguments(new List<string>() { "headless", "window-size=1200x600" });
-        IWebDriver webDriver = new ChromeDriver(options);
+    {          
+        var guard = await _restaurantsService.GetAllAsync(new CancellationTokenSource().Token);
+        if (guard.Count<1)
 
-        webDriver.Navigate().GoToUrl("https://www.google.pl/maps/search/restauracja+bielsko/@49.9107239,18.9370692,12z/data=!3m1!4b1");
-        Thread.Sleep(100);
-        IWebElement buttonToClick = webDriver.FindElement(By.XPath("//*[@id=\"yDmH0d\"]/c-wiz/div/div/div/div[2]/div[1]/div[3]/div[1]/div[1]/form[2]/div/div/button"));
-        Thread.Sleep(100);
-        buttonToClick.Click();
-        Thread.Sleep(100);
-        string content = webDriver.PageSource;
-        var htmlDocument = new HtmlDocument();
-        htmlDocument.LoadHtml(content);
-        var restaurantList = htmlDocument.DocumentNode.SelectNodes("//a[@class='hfpxzc']");
-
-        foreach (var r in restaurantList)
         {
-            Restaurant restaurant = new Restaurant();
-            var nestedHtmlDocument = new HtmlDocument();
+            List<Restaurant> restaurants = new List<Restaurant>();
+            var options = new ChromeOptions();
+            options.AddArguments(new List<string>() { "headless", "window-size=1200x600" });
+            IWebDriver webDriver = new ChromeDriver(options);
 
-            string URL = r.GetAttributeValue("href", "No information");
-            Regex pattern = new Regex(@"\d\d[.]\d\d\d\d\d\d\d");
+            webDriver.Navigate().GoToUrl("https://www.google.pl/maps/search/restauracja+bielsko/@49.9107239,18.9370692,12z/data=!3m1!4b1");
+            Thread.Sleep(100);
+            IWebElement buttonToClick = webDriver.FindElement(By.XPath("//*[@id=\"yDmH0d\"]/c-wiz/div/div/div/div[2]/div[1]/div[3]/div[1]/div[1]/form[2]/div/div/button"));
+            Thread.Sleep(100);
+            buttonToClick.Click();
+            Thread.Sleep(100);
+            string content = webDriver.PageSource;
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(content);
+            var restaurantList = htmlDocument.DocumentNode.SelectNodes("//a[@class='hfpxzc']");
 
-            bool janusz = false;
-            foreach (Match match in pattern.Matches(URL))
+            foreach (var r in restaurantList)
             {
-                if (janusz)
+                Restaurant restaurant = new Restaurant();
+                var nestedHtmlDocument = new HtmlDocument();
+
+                string URL = r.GetAttributeValue("href", "No information");
+                Regex pattern = new Regex(@"\d\d[.]\d\d\d\d\d\d\d");
+
+                bool janusz = false;
+                foreach (Match match in pattern.Matches(URL))
                 {
-                    restaurant.CordY = match.Value;
+                    if (janusz)
+                    {
+                        restaurant.CordY = match.Value;
+                    }
+                    else
+                    {
+                        restaurant.CordX = match.Value;
+                    };
+                    janusz = true;
                 }
-                else
+
+                webDriver.Navigate().GoToUrl(URL);
+
+                string nestedContent = webDriver.PageSource;
+                nestedHtmlDocument.LoadHtml(nestedContent);
+
+                var RestaurantInfoNode = nestedHtmlDocument.DocumentNode.SelectNodes("//div[@class='Io6YTe fontBodyMedium kR99db ']");
+
+                var CategoryInfoNode = nestedHtmlDocument.DocumentNode.SelectSingleNode("//button[@class='DkEaL ']");
+
+                //Creating Restaurant 
+                restaurant.Name = RestaurantInfoNode[0].InnerHtml;
+                restaurant.Adress = RestaurantInfoNode[0].InnerHtml;
+                for (int i = 1; i < RestaurantInfoNode.Count; i++)
                 {
-                    restaurant.CordX = match.Value;
-                };
-                janusz = true;
+                    string nodeInnerHtml = RestaurantInfoNode[i].InnerText;
+
+                    if (nodeInnerHtml.Contains('+') && nodeInnerHtml.Contains("Bielsko-Biała"))
+                    {
+                        restaurant.PlusCode = nodeInnerHtml;
+                    }
+                    if (nodeInnerHtml.Contains(".pl") || nodeInnerHtml.Contains(".com"))
+                    {
+                        restaurant.Website = nodeInnerHtml;
+                    }
+                }
+                restaurant.Category = CategoryInfoNode.InnerText;
+                await _restaurantsService.CreateAsync(restaurant);
             }
-
-            webDriver.Navigate().GoToUrl(URL);
-
-            string nestedContent = webDriver.PageSource;
-            nestedHtmlDocument.LoadHtml(nestedContent);
-
-            var RestaurantInfoNode = nestedHtmlDocument.DocumentNode.SelectNodes("//div[@class='Io6YTe fontBodyMedium kR99db ']");
-
-            var CategoryInfoNode = nestedHtmlDocument.DocumentNode.SelectSingleNode("//button[@class='DkEaL ']");
-
-            //Creating Restaurant 
-            restaurant.Name = RestaurantInfoNode[0].InnerHtml;
-            restaurant.Adress = RestaurantInfoNode[0].InnerHtml;
-            for (int i = 1; i < RestaurantInfoNode.Count; i++)
-            {
-                string nodeInnerHtml = RestaurantInfoNode[i].InnerText;
-
-                if (nodeInnerHtml.Contains('+') && nodeInnerHtml.Contains("Bielsko-Biała"))
-                {
-                    restaurant.PlusCode = nodeInnerHtml;
-                }
-                if (nodeInnerHtml.Contains(".pl") || nodeInnerHtml.Contains(".com"))
-                {
-                    restaurant.Website = nodeInnerHtml;
-                }
-            }
-            restaurant.Category = CategoryInfoNode.InnerText;
-            await _restaurantsService.CreateAsync(restaurant);
         }
     }
 }
