@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System;
 using RestaurMap.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace RestaurMap.Controllers;
 
