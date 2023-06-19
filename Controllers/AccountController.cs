@@ -35,7 +35,7 @@ public class AccountController : Controller
                 Microsoft.AspNetCore.Identity.SignInResult result = await signInManager.PasswordSignInAsync(appUser, password, false, false);
                 if (result.Succeeded)
                 {
-                    return Redirect("https://localhost:7143/Secured");
+                    return Redirect("https://localhost:7143");
                 }
             }
             ModelState.AddModelError(nameof(email), "Login Failed: Invalid Email or Password");
