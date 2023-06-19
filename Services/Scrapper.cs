@@ -6,6 +6,7 @@ using RestaurMap.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Text.RegularExpressions;
 using static System.Net.Mime.MediaTypeNames;
+using System.Threading;
 
 namespace RestaurMap.Services;
 
@@ -15,9 +16,15 @@ public class Scrapper
     public Scrapper(IRestaurantsService restaurantsService)
     {
         _restaurantsService = restaurantsService;
+        
     }
     public async Task Scrapp()
     {
+        int count;
+        var list = await _restaurantsService.GetAllAsync(CancellationToken.None);
+        count = list.Count();
+        if (count >= 5)
+            return;
         List<Restaurant> restaurants = new List<Restaurant>();
         var options = new ChromeOptions();
         options.AddArguments(new List<string>() { "headless", "window-size=1200x600" });
