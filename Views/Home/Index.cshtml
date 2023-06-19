@@ -1,12 +1,44 @@
-﻿@page
-
-@using Microsoft.AspNetCore.Http
-@model IndexModel
+﻿@using Microsoft.AspNetCore.Http
+@using System.Text.Json;
+@model IEnumerable<RestaurMap.Models.Restaurant>
 
 
 <div class="text-center">
-    <h1 class="display-4">Mapeo</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Znajdz swoje ulubione jedzenie!</h1>
 </div>
 
 <div id="map" style="height: 500px"></div>
+
+@section scripts{
+    <script type="text/javascript"> 
+        var restaurants = @Json.Serialize(Model.ToList());
+
+        var restaurantTypes = [];
+        restaurants.forEach( restaurant =>
+            {
+            if (restaurant.cordX && restaurant.cordY) {
+                var marker = L.marker([restaurant.cordX, restaurant.cordY], { tags: [restaurant.category], title: restaurant.name }).bindPopup(restaurant.name + "</br>" + restaurant.adress)
+                markersLayer.addLayer(marker)
+                if(!restaurantTypes.includes(restaurant.category)){
+                        restaurantTypes.push(restaurant.category);
+                    }
+                }
+            }
+        )
+
+        L.control.tagFilterButton({
+            data: restaurantTypes,
+            icon: '<img src="js/images/filter.png">',
+            filterOnEveryClick: true
+        }).addTo(map);
+
+        var c = new L.Control.Coordinates();
+
+        c.addTo(map);
+
+        map.on('click', function (e) {
+            c.setCoordinates(e);
+        });
+
+    </script>
+}

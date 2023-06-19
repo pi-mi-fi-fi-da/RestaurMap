@@ -5,13 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - RestaurMap</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/leaflet.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/leaflet-easy-button.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/leaflet-tag-filter-button.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/leaflet-search.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/leaflet-coordinates.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+
+    <script src="~/js/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <script src="~/js/leaflet-easy-button.js"></script>
+    <script src="~/js/leaflet-coordinates.js"></script>
+    <script src="~/js/leaflet-tag-filter-button.js"></script>
+    <script src="~/js/leaflet-search.js"></script>
     <link rel="stylesheet" href="~/RestaurMap.styles.css" asp-append-version="true" />
-    <link rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            crossorigin=""></script>
+    <style>
+        .easy-button-button {
+          display: block !important;
+        }
+
+        .tag-filter-tags-container {
+          left: 30px;
+        }
+    </style>
 </head>
 <body>
     <header>
