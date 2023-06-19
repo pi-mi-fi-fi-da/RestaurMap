@@ -69,7 +69,7 @@ public class Scrapper
             nestedHtmlDocument.LoadHtml(nestedContent);
 
             var RestaurantInfoNode = nestedHtmlDocument.DocumentNode.SelectNodes("//div[@class='Io6YTe fontBodyMedium kR99db ']");
-
+            var CategoryInfoNode = nestedHtmlDocument.DocumentNode.SelectSingleNode("//button[@class='DkEaL ']");
             //Creating Restaurant 
             restaurant.Name = RestaurantInfoNode[0].InnerHtml;
             for (int i = 1; i < RestaurantInfoNode.Count; i++)
@@ -84,6 +84,7 @@ public class Scrapper
                     restaurant.Website = nodeInnerHtml;
                 }
             }
+            restaurant.Category = CategoryInfoNode.InnerText;
             await _restaurantsService.CreateAsync(restaurant);
         }
     }

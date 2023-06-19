@@ -33,7 +33,7 @@ public class OperationsController : Controller
 
             IdentityResult result = await userManager.CreateAsync(appUser, user.Password);
 
-            await userManager.AddToRoleAsync(appUser, "Admin");
+            await userManager.AddToRoleAsync(appUser, "User");
 
             if (result.Succeeded)
                 ViewBag.Message = "User Created Successfully";
